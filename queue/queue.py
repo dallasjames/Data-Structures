@@ -1,3 +1,6 @@
+import sys
+sys.path.extend('../singly_linked_list')
+from singly_linked_list.singly_linked_list import LinkedList
 import array
 """
 A queue is a data structure whose primary purpose is to store and
