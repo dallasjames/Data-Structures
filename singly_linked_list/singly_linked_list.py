@@ -47,12 +47,13 @@ class LinkedList:
             current_tail = self.tail
             self.head = None
             self.tail = None
+            self.length -= 1
             return current_tail.value
         else:
             new_tail = self.head
+            old_tail = self.tail
             while new_tail.next is not self.tail:
-                new_tail.next
-                return new_tail
+                new_tail = new_tail.next
             self.tail = new_tail
             self.length -= 1
-            return new_tail.next.value
+            return old_tail.value
