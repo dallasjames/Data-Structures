@@ -10,6 +10,12 @@ class ListNode:
         self.value = value
         self.next = next
 
+    def delete(self):
+        if self.prev:
+            self.prev.next = self.next
+        if self.next:
+            self.next.prev = self.prev
+
 
 """
 Our doubly-linked list class. It holds references to 
@@ -34,14 +40,15 @@ class DoublyLinkedList:
 
     def add_to_head(self, value):
         new_node = ListNode(value, None, None)
-        self.length += 1
-        if not self.head and not self.tail:
+        if not self.head:
             self.head = new_node
             self.tail = new_node
+            self.length += 1
         else:
             new_node.next = self.head
             self.head.prev = new_node
             self.head = new_node
+            self.length += 1
 
     """
     Removes the List's current head node, making the
@@ -50,10 +57,21 @@ class DoublyLinkedList:
     """
 
     def remove_from_head(self):
-        value = self.head.value
-        self.delete(self.head)
-        self.length -= 1
-        return value
+        if not self.head:
+            return None
+        elif self.head == self.tail:
+            value = self.head.value
+            self.head = None
+            self.tail = None
+            self.length -= 1
+            return value
+        else:
+            value = self.head.value
+            new_head = self.head.next
+            new_head.prev = None
+            self.head = new_head
+            self.length -= 1
+            return value
 
     """
     Wraps the given value in a ListNode and inserts it 
@@ -63,14 +81,15 @@ class DoublyLinkedList:
 
     def add_to_tail(self, value):
         new_node = ListNode(value, None, None)
-        self.length += 1
-        if not self.head and not self.tail:
+        if not self.head:
             self.head = new_node
             self.tail = new_node
+            self.length += 1
         else:
             new_node.prev = self.tail
             self.tail.next = new_node
             self.tail = new_node
+            self.length += 1
 
     """
     Removes the List's current tail node, making the 
@@ -79,10 +98,21 @@ class DoublyLinkedList:
     """
 
     def remove_from_tail(self):
-        value = self.head.value
-        self.delete(self.tail)
-        self.length -= 1
-        return value
+        if not self.tail:
+            return None
+        elif self.tail == self.head:
+            value = self.tail.value
+            self.head = None
+            self.tail = None
+            self.length -= 1
+            return value
+        else:
+            old_tail = self.tail
+            self.tail.prev = self.tail
+            self.tail.next = None
+            self.length -= 1
+            return old_tail
+
 
     """
     Removes the input node from its current spot in the 
@@ -103,8 +133,14 @@ class DoublyLinkedList:
     """
 
     def move_to_end(self, node):
-        if node is self.tail:
-            pass
+        if node is self.tail or self.length <= 1:
+            return self.tail.value
+        elif self.length == 2 and node is self.head:
+            self.head, self.tail = self.tail, self.head
+            self.head.next = self.tail
+            self.tail.prev = self.head
+            self.head.prev = None
+            self.tail.next = None
         else:
             value = node.value
             self.delete(node)
@@ -116,7 +152,21 @@ class DoublyLinkedList:
     """
 
     def delete(self, node):
-        pass
+        if self.length == 0:
+            return None
+        elif self.length == 1:
+            self.head = None
+            self.tail = None
+            self.length -= 1
+        elif node == self.head:
+            self.remove_from_head()
+        elif node == self.tail:
+            self.remove_from_tail()
+        else:
+            deleted = node.value
+            node.delete()
+            self.length -= 1
+            return deleted
 
     """
     Finds and returns the maximum value of all the nodes 
@@ -124,4 +174,14 @@ class DoublyLinkedList:
     """
 
     def get_max(self):
-        pass
+        if self.length == 0:
+            return None
+        if self.length == 1:
+            return self.head.value
+        current_max = self.head.value
+        current_node = self.head
+        while current_node is not None:
+            if current_max < current_node.value:
+                current_max = current_node.value
+            current_node = current_node.next
+        return current_max
