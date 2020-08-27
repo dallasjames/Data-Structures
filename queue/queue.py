@@ -1,4 +1,5 @@
 import sys
+
 sys.path.extend('../singly_linked_list')
 from singly_linked_list.singly_linked_list import LinkedList
 import array

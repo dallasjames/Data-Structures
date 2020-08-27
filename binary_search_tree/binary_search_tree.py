@@ -9,6 +9,39 @@ This part of the project comprises two days:
 2. Implement the `in_order_print`, `bft_print`, and `dft_print` methods
    on the BSTNode class.
 """
+from stack.stack import Stack
+import sys
+
+sys.path.extend('../singly_linked_list')
+from singly_linked_list.singly_linked_list import LinkedList
+
+class Queue:
+    def __init__(self):
+        self.size = 0
+        self.storage = LinkedList()
+        # self.storage = array.array('i', [])
+
+    def __len__(self):
+        return self.size
+
+    def enqueue(self, value):
+        self.size += 1
+        self.storage.add_to_tail(value)
+        # self.size += 1
+        # self.storage.append(value)
+
+    def dequeue(self):
+        if self.size == 0:
+            return None
+        self.size -= 1
+        return self.storage.remove_head()
+        # if len(self.storage) > 0:
+        #     dequeued = self.storage[0]
+        #     self.size -= 1
+        #     self.storage.remove(self.storage[0])
+        #     return dequeued
+        # else:
+        #     return None
 
 
 class BSTNode:
@@ -72,17 +105,39 @@ class BSTNode:
     # Print all the values in order from low to high
     # Hint:  Use a recursive, depth first traversal
     def in_order_print(self):
-        pass
+        if self.left:
+            self.left.in_order_print()
+        print(self.value)
+        if self.right:
+            self.right.in_order_print()
 
     # Print the value of every node, starting with the given node,
     # in an iterative breadth first traversal
     def bft_print(self):
-        pass
+        cur_node = self
+        queue = Queue()
+        queue.enqueue(cur_node)
+        while len(queue) > 0:
+            cur_node = queue.dequeue()
+            print(cur_node.value)
+            if cur_node.right is not None:
+                queue.enqueue(cur_node.right)
+            if cur_node.left is not None:
+                queue.enqueue(cur_node.left)
 
     # Print the value of every node, starting with the given node,
     # in an iterative depth first traversal
     def dft_print(self):
-        pass
+        cur_node = self
+        stack = Stack()
+        stack.push(cur_node)
+        while stack.size > 0:
+            cur_node = stack.pop()
+            print(cur_node.value)
+            if cur_node.right is not None:
+                stack.push(cur_node.right)
+            if cur_node.left is not None:
+                stack.push(cur_node.left)
 
     # Stretch Goals -------------------------
     # Note: Research may be required
@@ -108,7 +163,7 @@ This code is necessary for testing the `print` methods
 # bst.insert(3)
 # bst.insert(4)
 # bst.insert(2)
-#
+
 # bst.bft_print()
 # bst.dft_print()
 #
